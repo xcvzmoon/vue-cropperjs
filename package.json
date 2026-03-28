@@ -1,0 +1,71 @@
+{
+  "name": "@xcvzmoon/vue-cropperjs",
+  "description": "Vue component wrapper for CropperJS",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "fmt": "oxfmt && oxfmt --check",
+    "lint": "oxlint --type-aware",
+    "build": "tsdown",
+    "test": "vitest run",
+    "prepare": "husky",
+    "test:watch": "vitest",
+    "changelog:bump": "changelogen@latest --bump"
+  },
+  "keywords": [
+    "vue",
+    "crop",
+    "cropper",
+    "cropperjs",
+    "vue-cropperjs"
+  ],
+  "author": {
+    "name": "Mon Albert Gamil",
+    "email": "mrgamilmonalbert@gmail.com",
+    "url": "https://github.com/xcvzmoon/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xcvzmoon/vue-cropperjs"
+  },
+  "sideEffects": false,
+  "license": "MIT",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.mts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "cropperjs": "^2.1.0"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "oxfmt": "^0.42.0",
+    "oxlint": "^1.57.0",
+    "oxlint-tsgolint": "^0.18.1",
+    "tsdown": "^0.21.7",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2",
+    "vue": "^3.5.31"
+  },
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs,html,css,yaml}": "oxfmt",
+    "*.{js,jsx,ts,tsx,mjs,cjs}": "oxlint"
+  },
+  "packageManager": "pnpm@10.33.0"
+}
