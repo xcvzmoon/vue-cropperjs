@@ -1,7 +1,7 @@
 {
   "name": "@xcvzmoon/vue-cropperjs",
   "description": "Vue component wrapper for CropperJS",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "fmt": "oxfmt && oxfmt --check",
@@ -10,7 +10,7 @@
     "test": "vitest run",
     "prepare": "husky",
     "test:watch": "vitest",
-    "changelog:bump": "changelogen@latest --bump"
+    "changelog:bump": "changelogen --bump"
   },
   "keywords": [
     "vue",
@@ -50,6 +50,7 @@
     "cropperjs": "^2.1.0"
   },
   "devDependencies": {
+    "changelogen": "^0.6.2",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
     "oxfmt": "^0.42.0",
