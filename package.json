@@ -6,6 +6,7 @@
   "scripts": {
     "fmt": "oxfmt && oxfmt --check",
     "lint": "oxlint --type-aware",
+    "typecheck": "vue-tsc --noEmit",
     "build": "tsdown",
     "test": "vitest run",
     "prepare": "husky",
@@ -30,13 +31,13 @@
   },
   "sideEffects": false,
   "license": "MIT",
-  "main": "dist/index.mjs",
-  "types": "dist/index.d.mts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.mts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.mjs"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -50,16 +51,21 @@
     "cropperjs": "^2.1.0"
   },
   "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.5",
+    "@vue/test-utils": "^2.4.6",
     "changelogen": "^0.6.2",
     "husky": "^9.1.7",
+    "jsdom": "^29.0.1",
     "lint-staged": "^16.4.0",
     "oxfmt": "^0.42.0",
     "oxlint": "^1.57.0",
     "oxlint-tsgolint": "^0.18.1",
     "tsdown": "^0.21.7",
     "typescript": "^6.0.2",
+    "unplugin-vue": "^7.1.1",
     "vitest": "^4.1.2",
-    "vue": "^3.5.31"
+    "vue": "^3.5.31",
+    "vue-tsc": "^3.2.6"
   },
   "peerDependencies": {
     "vue": "^3.0.0"
