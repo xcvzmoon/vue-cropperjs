@@ -12,13 +12,6 @@
     "newlinesBetween": false
   },
   "singleQuote": true,
-  "ignorePatterns": [
-    "node_modules",
-    "dist",
-    "bun.lock",
-    "CHANGELOG.md",
-    ".DS_Store",
-    ".env*",
-    ".vscode"
-  ]
+  "ignorePatterns": ["node_modules", "dist", "bun.lock", "CHANGELOG.md", ".DS_Store", ".env*", ".vscode"],
+  "printWidth": 120
 }
