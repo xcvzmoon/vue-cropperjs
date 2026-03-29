@@ -1,6 +1,28 @@
 # Changelog
 
 
+## v1.1.0
+
+[compare changes](https://github.com/xcvzmoon/vue-cropperjs/compare/v1.0.0...v1.1.0)
+
+### 💅 Refactors
+
+- **useCropper:** Make a hybrid state and action composable ([023d8a9](https://github.com/xcvzmoon/vue-cropperjs/commit/023d8a9))
+
+### 📖 Documentation
+
+- Reorganize API reference into tables ([d8e6cab](https://github.com/xcvzmoon/vue-cropperjs/commit/d8e6cab))
+
+### 🏡 Chore
+
+- **cropper-image:** Use update composable ([4915487](https://github.com/xcvzmoon/vue-cropperjs/commit/4915487))
+- Update exports and types ([bd5463a](https://github.com/xcvzmoon/vue-cropperjs/commit/bd5463a))
+- **examples:** Update vue and nuxt examples ([f57535a](https://github.com/xcvzmoon/vue-cropperjs/commit/f57535a))
+
+### ❤️ Contributors
+
+- Mon Albert Gamil <mrgamilmonalbert@gmail.com>
+
 ## v1.0.0
 
 [compare changes](https://github.com/xcvzmoon/vue-cropperjs/compare/v0.0.1...v1.0.0)
