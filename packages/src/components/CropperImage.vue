@@ -8,7 +8,7 @@ import type {
   CropperImageProps,
   CropperTransformEventDetail,
 } from '../types.js';
-import { onBeforeUnmount, onMounted, useTemplateRef, watch } from 'vue';
+import { onBeforeUnmount, onMounted, shallowRef, useTemplateRef, watch } from 'vue';
 import { useCropper } from '../composables/useCropper.js';
 
 const props = withDefaults(defineProps<CropperImageProps>(), {
@@ -22,9 +22,11 @@ const props = withDefaults(defineProps<CropperImageProps>(), {
 });
 
 const emits = defineEmits<CropperImageEmits>();
-const imageRef = useTemplateRef<HTMLImageElement | null>('imageRef');
+const containerRef = useTemplateRef<HTMLDivElement | null>('containerRef');
+const imageRef = shallowRef<HTMLImageElement | null>(null);
 const cropper = useCropper(imageRef);
 let unbindElementEvents: (() => void) | null = null;
+let lastEmittedData: CropperData | null = null;
 let syncingFromModel = false;
 
 function normalizeError(error: unknown): Error {
@@ -35,12 +37,39 @@ function createSourceErrorMessage(src: string): string {
   return `Failed to load image source "${src}"`;
 }
 
+function ensureImageElement(): HTMLImageElement {
+  const existingImage = imageRef.value;
+  if (existingImage) return existingImage;
+
+  const nextImage = new Image();
+  imageRef.value = nextImage;
+
+  return nextImage;
+}
+
+function syncSourceElement() {
+  const sourceImage = ensureImageElement();
+  sourceImage.alt = props.alt;
+
+  if (props.crossorigin !== undefined) sourceImage.crossOrigin = props.crossorigin;
+  sourceImage.src = props.src;
+}
+
 function assignDefinedProps(target: object, source: object | undefined) {
   if (!source) return;
 
   for (const [key, value] of Object.entries(source)) {
     if (value !== undefined) Reflect.set(target, key, value);
   }
+}
+
+function getStableObjectKey(value: object | undefined): string {
+  if (!value) return '';
+  return JSON.stringify(
+    Object.entries(value)
+      .filter(([, entryValue]) => entryValue !== undefined)
+      .sort(([leftKey], [rightKey]) => leftKey.localeCompare(rightKey)),
+  );
 }
 
 function isSameData(left: CropperImageProps['data'], right: CropperData | null): boolean {
@@ -59,7 +88,11 @@ function isSameData(left: CropperImageProps['data'], right: CropperData | null):
 
 function emitDataUpdate() {
   if (syncingFromModel) return;
+
   const nextData = cropper.getData();
+
+  lastEmittedData = nextData;
+
   if (!isSameData(props.data, nextData)) emits('update:data', nextData);
 }
 
@@ -67,6 +100,11 @@ function applyModelData(nextData: CropperData | null | undefined) {
   const currentData = cropper.getData();
 
   if (nextData === undefined) return;
+
+  if (isSameData(nextData, lastEmittedData)) {
+    lastEmittedData = nextData;
+    return;
+  }
 
   if (nextData === null) {
     syncingFromModel = true;
@@ -159,18 +197,25 @@ function bindElementEvents() {
 
 async function initialize() {
   try {
-    const instance = await cropper.init(props.initOptions);
-    if (!instance) return;
+    syncSourceElement();
 
-    bindElementEvents();
-    applyElementProps();
-    applyModelData(props.data);
+    const initOptions = containerRef.value
+      ? { ...props.initOptions, container: containerRef.value }
+      : props.initOptions;
+
+    const instance = await cropper.init(initOptions);
+
+    if (!instance) return;
 
     try {
       await cropper.getImage()?.$ready();
     } catch (error) {
       throw new Error(`${createSourceErrorMessage(props.src)}: ${normalizeError(error).message}`, { cause: error });
     }
+
+    bindElementEvents();
+    applyElementProps();
+    applyModelData(props.data);
 
     emits('ready', instance);
     emitDataUpdate();
@@ -196,6 +241,7 @@ watch(
     cropper
       .setImageSource(nextSrc)
       .then(() => {
+        syncSourceElement();
         applyElementProps();
         applyModelData(props.data);
         const instance = cropper.getInstance();
@@ -211,6 +257,7 @@ watch(
 watch(
   () => props.alt,
   () => {
+    syncSourceElement();
     applyElementProps();
   },
 );
@@ -218,40 +265,42 @@ watch(
 watch(
   () => props.crossorigin,
   () => {
+    syncSourceElement();
     applyElementProps();
   },
 );
 
 watch(
-  () => props.imageProps,
+  () => getStableObjectKey(props.imageProps),
   () => {
     applyElementProps();
   },
-  { deep: true },
 );
 
 watch(
   () => props.data,
   (nextData) => {
+    if (isSameData(nextData, lastEmittedData)) {
+      return;
+    }
+
     applyModelData(nextData);
   },
   { deep: true },
 );
 
 watch(
-  () => props.selectionProps,
+  () => getStableObjectKey(props.selectionProps),
   () => {
     applyElementProps();
   },
-  { deep: true },
 );
 
 watch(
-  () => props.canvasProps,
+  () => getStableObjectKey(props.canvasProps),
   () => {
     applyElementProps();
   },
-  { deep: true },
 );
 
 const exposed: CropperImageExposed = {
@@ -263,7 +312,5 @@ defineExpose<CropperImageExposed>(exposed);
 </script>
 
 <template>
-  <div data-vue-cropper-root="">
-    <img ref="imageRef" :alt="alt" :crossorigin="crossorigin" :src="src" />
-  </div>
+  <div ref="containerRef" data-vue-cropper-root="" />
 </template>

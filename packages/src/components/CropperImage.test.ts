@@ -167,6 +167,7 @@ describe('CropperImage', () => {
     expect(mockState.canvas.background).toBe(true);
     expect(mockState.selection.movable).toBe(true);
     expect(wrapper.emitted('ready')).toHaveLength(1);
+    expect(mockState.instances[0]?.element.src).toContain('/example.jpg');
   });
 
   it('updates the cropper image source without re-initializing', async () => {
