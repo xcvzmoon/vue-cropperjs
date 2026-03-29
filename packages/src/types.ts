@@ -1,5 +1,5 @@
 import type { CropperCanvas, CropperImage as CropperImageElement, CropperOptions, CropperSelection } from 'cropperjs';
-import type { Ref, ShallowRef } from 'vue';
+import type { ComputedRef, Ref, ShallowRef } from 'vue';
 
 export type CropperInstance = InstanceType<typeof import('cropperjs').default>;
 export type CropperCanvasElement = CropperCanvas;
@@ -76,6 +76,13 @@ export interface CropperTransformEventDetail {
   oldMatrix: number[];
 }
 
+export type CropperSyncMode = 'events' | 'manual';
+
+export interface UseCropperOptions {
+  initOptions?: CropperOptions | undefined;
+  syncData?: CropperSyncMode | undefined;
+}
+
 export interface CropperImageProps {
   src: string;
   alt?: string | undefined;
@@ -88,8 +95,14 @@ export interface CropperImageProps {
 }
 
 export interface UseCropperReturn {
+  applyData: (data: CropperData | null) => CropperData | null;
+  canvas: ComputedRef<CropperCanvas | null>;
   cropper: ShallowRef<CropperInstance | null>;
+  data: Ref<CropperData | null>;
   elementRef: Ref<HTMLImageElement | null>;
+  error: Ref<Error | null>;
+  flipX: () => CropperImageElement | null;
+  flipY: () => CropperImageElement | null;
   changeSelection: (
     x: number,
     y: number,
@@ -99,8 +112,6 @@ export interface UseCropperReturn {
   ) => CropperSelection | null;
   clearSelection: () => CropperSelection | null;
   destroy: () => void;
-  flipX: () => CropperImageElement | null;
-  flipY: () => CropperImageElement | null;
   getCanvas: () => CropperCanvas | null;
   getData: () => CropperData | null;
   getImage: () => CropperImageElement | null;
@@ -108,16 +119,22 @@ export interface UseCropperReturn {
   getInstance: () => CropperInstance | null;
   getSelection: () => CropperSelection | null;
   getSelections: () => NodeListOf<CropperSelection> | null;
+  image: ComputedRef<CropperImageElement | null>;
+  imageTransform: Ref<CropperImageTransform | null>;
   init: (options?: CropperOptions | undefined) => Promise<CropperInstance | null>;
+  isInitializing: Ref<boolean>;
+  isReady: Ref<boolean>;
   moveImage: (x: number, y?: number | undefined) => CropperImageElement | null;
   moveImageTo: (x: number, y?: number | undefined) => CropperImageElement | null;
   moveSelection: (x: number, y?: number | undefined) => CropperSelection | null;
   moveSelectionTo: (x: number, y?: number | undefined) => CropperSelection | null;
+  refreshData: () => CropperData | null;
   resetFlip: () => CropperImageElement | null;
   resetImageTransform: () => CropperImageElement | null;
   resetSelection: () => CropperSelection | null;
   rotateImage: (angle: number | string, x?: number | undefined, y?: number | undefined) => CropperImageElement | null;
   scaleImage: (x: number, y?: number | undefined) => CropperImageElement | null;
+  selection: ComputedRef<CropperSelection | null>;
   setData: (data: Partial<CropperData>) => CropperData | null;
   setImageSource: (src: string) => Promise<CropperImageElement | null>;
   setImageTransform: (transform: CropperImageTransform) => CropperImageElement | null;

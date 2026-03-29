@@ -19,7 +19,9 @@ export type {
   CropperInstance,
   CropperSelectionElement,
   CropperSelectionProps,
+  CropperSyncMode,
   CropperTransformEventDetail,
+  UseCropperOptions,
   UseCropperReturn,
 } from './types.js';
 
