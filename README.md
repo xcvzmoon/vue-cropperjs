@@ -98,11 +98,12 @@ import { onMounted, useTemplateRef } from 'vue';
 import { useCropper } from '@xcvzmoon/vue-cropperjs';
 
 const imageRef = useTemplateRef<HTMLImageElement | null>('imageRef');
-const cropper = useCropper(imageRef);
+const cropper = useCropper(imageRef, { syncData: 'events' });
 
 onMounted(async () => {
   await cropper.init();
   cropper.zoomImage(0.1);
+  console.log(cropper.data.value);
 });
 </script>
 
@@ -111,7 +112,9 @@ onMounted(async () => {
 </template>
 ```
 
-The composable is useful when you want full control over markup and lifecycle while still getting the typed helper methods.
+The composable is useful when you want full control over markup and lifecycle while still getting typed state refs and action methods.
+
+`syncData: 'events'` keeps the `data` and `imageTransform` refs updated from Cropper events. The default `syncData: 'manual'` avoids continuous syncing and lets you call `refreshData()` explicitly.
 
 ## Public API
 
@@ -238,7 +241,17 @@ The composable is useful when you want full control over markup and lifecycle wh
 `useCropper()` returns the same typed action surface used by the component expose API, plus:
 
 - `cropper`: `ShallowRef<CropperInstance | null>`
+- `canvas`: `ComputedRef<CropperCanvasElement | null>`
+- `image`: `ComputedRef<CropperImageElementInstance | null>`
+- `selection`: `ComputedRef<CropperSelectionElement | null>`
 - `elementRef`: `Ref<HTMLImageElement | null>`
+- `data`: `Ref<CropperData | null>`
+- `imageTransform`: `Ref<CropperImageTransform | null>`
+- `isReady`: `Ref<boolean>`
+- `isInitializing`: `Ref<boolean>`
+- `error`: `Ref<Error | null>`
+- `refreshData(): CropperData | null`
+- `applyData(data: CropperData | null): CropperData | null`
 - `init(options?): Promise<CropperInstance | null>`
 
 ## Types
@@ -250,11 +263,13 @@ Useful exported types:
 - `CropperImageEmits`
 - `CropperData`
 - `CropperInitOptions`
+- `CropperSyncMode`
 - `CropperCanvasOptions`
 - `CropperImageTransform`
 - `CropperCanvasElement`
 - `CropperImageElementInstance`
 - `CropperSelectionElement`
+- `UseCropperOptions`
 
 ## Reactive behavior
 
