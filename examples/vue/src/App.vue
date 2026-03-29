@@ -6,6 +6,7 @@ import {
   type CropperImageInstance,
 } from '@xcvzmoon/vue-cropperjs';
 import { computed, ref, useTemplateRef } from 'vue';
+import ComposableDemo from './components/ComposableDemo.vue';
 
 type EventItem = {
   detail?: string;
@@ -202,7 +203,7 @@ function onActionEnd(event: CustomEvent<CropperActionEventDetail>) {
       <h1>Interactive API playground for the wrapper</h1>
       <p class="lede">
         This page demonstrates the component surface, emitted events, exposed instance methods, source switching, state
-        inspection, and canvas export in one place.
+        inspection, canvas export, and a direct `useCropper()` example in one place.
       </p>
     </section>
 
@@ -339,6 +340,8 @@ function onActionEnd(event: CustomEvent<CropperActionEventDetail>) {
         </div>
       </article>
     </section>
+
+    <ComposableDemo />
   </main>
 </template>
 
