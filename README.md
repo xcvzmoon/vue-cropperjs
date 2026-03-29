@@ -16,10 +16,11 @@ Vue 3 wrapper for [Cropper.js 2](https://github.com/fengyuanchen/cropperjs) with
 pnpm add @xcvzmoon/vue-cropperjs cropperjs
 ```
 
-Import Cropper's CSS in your app entry, layout, or component tree:
+Cropper.js 2 styles are bundled with its custom elements, so no separate CSS import is required:
 
 ```ts
-import 'cropperjs/dist/cropper.css';
+// Cropper.js 2 styles are bundled with its custom elements.
+// No separate CSS import is required.
 ```
 
 ## Basic usage
@@ -116,16 +117,25 @@ The composable is useful when you want full control over markup and lifecycle wh
 
 ### Component props
 
-| Prop             | Type                                     | Notes                                                             |
-| ---------------- | ---------------------------------------- | ----------------------------------------------------------------- |
-| `src`            | `string`                                 | Image source                                                      |
-| `alt`            | `string`                                 | Forwarded to Cropper's internal `cropper-image`                   |
-| `crossorigin`    | `'' \| 'anonymous' \| 'use-credentials'` | Forwarded to the internal image element                           |
-| `data`           | `CropperData \| null`                    | Two-way crop state via `v-model:data`                             |
-| `initOptions`    | `CropperInitOptions`                     | Init-only root options; currently `container` and `template` only |
-| `imageProps`     | `CropperImageElementProps`               | Live props for the internal `cropper-image`                       |
-| `selectionProps` | `CropperSelectionProps`                  | Live props for the internal `cropper-selection`                   |
-| `canvasProps`    | `CropperCanvasProps`                     | Live props for the internal `cropper-canvas`                      |
+| Group         | Props                                         |
+| ------------- | --------------------------------------------- |
+| Source        | `src`, `alt`, `crossorigin`                   |
+| State         | `data`                                        |
+| Init-only     | `initOptions`                                 |
+| Element props | `imageProps`, `selectionProps`, `canvasProps` |
+
+### Props matrix
+
+| Prop             | Type                                     | Purpose                                                          |
+| ---------------- | ---------------------------------------- | ---------------------------------------------------------------- |
+| `src`            | `string`                                 | Set the source image                                             |
+| `alt`            | `string`                                 | Forward alt text to the internal `cropper-image`                 |
+| `crossorigin`    | `'' \| 'anonymous' \| 'use-credentials'` | Forward image cross-origin behavior                              |
+| `data`           | `CropperData \| null`                    | Sync crop state with `v-model:data`                              |
+| `initOptions`    | `CropperInitOptions`                     | Configure init-only root options like `container` and `template` |
+| `imageProps`     | `CropperImageElementProps`               | Configure live image element behavior                            |
+| `selectionProps` | `CropperSelectionProps`                  | Configure live selection element behavior                        |
+| `canvasProps`    | `CropperCanvasProps`                     | Configure live canvas element behavior                           |
 
 ### Prop object shapes
 
@@ -154,72 +164,74 @@ The composable is useful when you want full control over markup and lifecycle wh
 
 ### Emits
 
-| Event          | Payload                                    | Notes                                 |
-| -------------- | ------------------------------------------ | ------------------------------------- |
-| `ready`        | `CropperInstance`                          | Fired after init and source readiness |
-| `error`        | `Error`                                    | Fired on init or source load failure  |
-| `action-start` | `CustomEvent<CropperActionEventDetail>`    | Forwarded from `cropper-canvas`       |
-| `action-move`  | `CustomEvent<CropperActionEventDetail>`    | Forwarded from `cropper-canvas`       |
-| `action-end`   | `CustomEvent<CropperActionEventDetail>`    | Forwarded from `cropper-canvas`       |
-| `action`       | `CustomEvent<CropperActionEventDetail>`    | Forwarded from `cropper-canvas`       |
-| `change`       | `CustomEvent<CropperChangeEventDetail>`    | Forwarded from `cropper-selection`    |
-| `transform`    | `CustomEvent<CropperTransformEventDetail>` | Forwarded from `cropper-image`        |
-| `update:data`  | `CropperData \| null`                      | Fired when crop state changes         |
+| Group     | Events                                                |
+| --------- | ----------------------------------------------------- |
+| Lifecycle | `ready`, `error`                                      |
+| Action    | `action-start`, `action-move`, `action-end`, `action` |
+| State     | `change`, `transform`, `update:data`                  |
+
+### Events matrix
+
+| Event          | Payload                                    | Purpose                                     |
+| -------------- | ------------------------------------------ | ------------------------------------------- |
+| `ready`        | `CropperInstance`                          | Report successful init and source readiness |
+| `error`        | `Error`                                    | Report init or source load failure          |
+| `action-start` | `CustomEvent<CropperActionEventDetail>`    | Forward canvas action start                 |
+| `action-move`  | `CustomEvent<CropperActionEventDetail>`    | Forward canvas action move                  |
+| `action-end`   | `CustomEvent<CropperActionEventDetail>`    | Forward canvas action end                   |
+| `action`       | `CustomEvent<CropperActionEventDetail>`    | Forward canvas action updates               |
+| `change`       | `CustomEvent<CropperChangeEventDetail>`    | Report selection changes                    |
+| `transform`    | `CustomEvent<CropperTransformEventDetail>` | Report image transform changes              |
+| `update:data`  | `CropperData \| null`                      | Sync combined crop state                    |
 
 ### Event detail types
 
-`CropperActionEventDetail`
-
-- `action`
-- `relatedEvent`
-- optional `scale`, `rotate`, `startX`, `startY`, `endX`, `endY`
-
-`CropperChangeEventDetail`
-
-- `x`, `y`, `width`, `height`
-
-`CropperTransformEventDetail`
-
-- `matrix`
-- `oldMatrix`
+| Detail type                   | Fields                                                                                   |
+| ----------------------------- | ---------------------------------------------------------------------------------------- |
+| `CropperActionEventDetail`    | `action`, `relatedEvent`, optional `scale`, `rotate`, `startX`, `startY`, `endX`, `endY` |
+| `CropperChangeEventDetail`    | `x`, `y`, `width`, `height`                                                              |
+| `CropperTransformEventDetail` | `matrix`, `oldMatrix`                                                                    |
 
 ### Exposed component methods
 
-Getters
+| Group            | Methods                                                                                                                                                                                                                                      |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Getters          | `getInstance()`, `getCanvas()`, `getImage()`, `getSelection()`, `getSelections()`, `getData()`, `getImageTransform()`                                                                                                                        |
+| Image            | `setImageSource(src)`, `moveImage(x, y?)`, `moveImageTo(x, y?)`, `zoomImage(scale, x?, y?)`, `rotateImage(angle, x?, y?)`, `flipX()`, `flipY()`, `resetFlip()`, `scaleImage(x, y?)`, `setImageTransform(transform)`, `resetImageTransform()` |
+| Selection        | `resetSelection()`, `clearSelection()`, `moveSelection(x, y?)`, `moveSelectionTo(x, y?)`, `changeSelection(x, y, width?, height?, aspectRatio?)`, `zoomSelection(scale, x?, y?)`                                                             |
+| Export and state | `toCanvas(options?)`, `setData(data)`, `destroy()`                                                                                                                                                                                           |
 
-- `getInstance(): CropperInstance | null`
-- `getCanvas(): CropperCanvasElement | null`
-- `getImage(): CropperImageElementInstance | null`
-- `getSelection(): CropperSelectionElement | null`
-- `getSelections(): NodeListOf<CropperSelectionElement> | null`
-- `getData(): CropperData | null`
-- `getImageTransform(): CropperImageTransform | null`
+### Methods matrix
 
-Image actions
-
-- `setImageSource(src): Promise<CropperImageElementInstance | null>`
-- `moveImage(x, y?)`
-- `moveImageTo(x, y?)`
-- `zoomImage(scale, x?, y?)`
-- `rotateImage(angle, x?, y?)`
-- `scaleImage(x, y?)`
-- `setImageTransform(transform)`
-- `resetImageTransform()`
-
-Selection actions
-
-- `resetSelection()`
-- `clearSelection()`
-- `moveSelection(x, y?)`
-- `moveSelectionTo(x, y?)`
-- `changeSelection(x, y, width?, height?, aspectRatio?)`
-- `zoomSelection(scale, x?, y?)`
-
-Export and state
-
-- `toCanvas(options?): Promise<HTMLCanvasElement | null>`
-- `setData(data): CropperData | null`
-- `destroy(): void`
+| Method                                                 | Return type                                    | Purpose                                   |
+| ------------------------------------------------------ | ---------------------------------------------- | ----------------------------------------- |
+| `getInstance()`                                        | `CropperInstance \| null`                      | Access the raw Cropper instance           |
+| `getCanvas()`                                          | `CropperCanvasElement \| null`                 | Access the internal canvas element        |
+| `getImage()`                                           | `CropperImageElementInstance \| null`          | Access the internal image element         |
+| `getSelection()`                                       | `CropperSelectionElement \| null`              | Access the primary selection              |
+| `getSelections()`                                      | `NodeListOf<CropperSelectionElement> \| null`  | Access all selections                     |
+| `getData()`                                            | `CropperData \| null`                          | Read image transform plus selection state |
+| `getImageTransform()`                                  | `CropperImageTransform \| null`                | Read the current image matrix             |
+| `setImageSource(src)`                                  | `Promise<CropperImageElementInstance \| null>` | Replace the current source image          |
+| `moveImage(x, y?)`                                     | `CropperImageElementInstance \| null`          | Move the image by delta                   |
+| `moveImageTo(x, y?)`                                   | `CropperImageElementInstance \| null`          | Move the image to coordinates             |
+| `zoomImage(scale, x?, y?)`                             | `CropperImageElementInstance \| null`          | Zoom the image                            |
+| `rotateImage(angle, x?, y?)`                           | `CropperImageElementInstance \| null`          | Rotate the image                          |
+| `flipX()`                                              | `CropperImageElementInstance \| null`          | Flip horizontally                         |
+| `flipY()`                                              | `CropperImageElementInstance \| null`          | Flip vertically                           |
+| `resetFlip()`                                          | `CropperImageElementInstance \| null`          | Reset flip scaling                        |
+| `scaleImage(x, y?)`                                    | `CropperImageElementInstance \| null`          | Apply image scale directly                |
+| `setImageTransform(transform)`                         | `CropperImageElementInstance \| null`          | Apply a transform matrix                  |
+| `resetImageTransform()`                                | `CropperImageElementInstance \| null`          | Reset the image transform                 |
+| `resetSelection()`                                     | `CropperSelectionElement \| null`              | Reset the current selection               |
+| `clearSelection()`                                     | `CropperSelectionElement \| null`              | Clear the current selection               |
+| `moveSelection(x, y?)`                                 | `CropperSelectionElement \| null`              | Move the selection by delta               |
+| `moveSelectionTo(x, y?)`                               | `CropperSelectionElement \| null`              | Move the selection to coordinates         |
+| `changeSelection(x, y, width?, height?, aspectRatio?)` | `CropperSelectionElement \| null`              | Update the selection box                  |
+| `zoomSelection(scale, x?, y?)`                         | `CropperSelectionElement \| null`              | Zoom the selection                        |
+| `toCanvas(options?)`                                   | `Promise<HTMLCanvasElement \| null>`           | Export the current crop to canvas         |
+| `setData(data)`                                        | `CropperData \| null`                          | Apply combined image and selection state  |
+| `destroy()`                                            | `void`                                         | Destroy the cropper instance              |
 
 ### Composable return value
 
