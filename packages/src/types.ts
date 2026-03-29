@@ -99,6 +99,8 @@ export interface UseCropperReturn {
   ) => CropperSelection | null;
   clearSelection: () => CropperSelection | null;
   destroy: () => void;
+  flipX: () => CropperImageElement | null;
+  flipY: () => CropperImageElement | null;
   getCanvas: () => CropperCanvas | null;
   getData: () => CropperData | null;
   getImage: () => CropperImageElement | null;
@@ -111,6 +113,7 @@ export interface UseCropperReturn {
   moveImageTo: (x: number, y?: number | undefined) => CropperImageElement | null;
   moveSelection: (x: number, y?: number | undefined) => CropperSelection | null;
   moveSelectionTo: (x: number, y?: number | undefined) => CropperSelection | null;
+  resetFlip: () => CropperImageElement | null;
   resetImageTransform: () => CropperImageElement | null;
   resetSelection: () => CropperSelection | null;
   rotateImage: (angle: number | string, x?: number | undefined, y?: number | undefined) => CropperImageElement | null;

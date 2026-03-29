@@ -103,6 +103,14 @@ export function useCropper(target: Ref<HTMLImageElement | null> = shallowRef(nul
     return getImage()?.$scale(x, y) ?? null;
   }
 
+  function flipX(): CropperImageElementInstance | null {
+    return scaleImage(-1, 1);
+  }
+
+  function flipY(): CropperImageElementInstance | null {
+    return scaleImage(1, -1);
+  }
+
   function setImageTransform(transform: CropperImageTransform): CropperImageElementInstance | null {
     return getImage()?.$setTransform(transform) ?? null;
   }
@@ -113,6 +121,10 @@ export function useCropper(target: Ref<HTMLImageElement | null> = shallowRef(nul
 
   function resetImageTransform(): CropperImageElementInstance | null {
     return getImage()?.$resetTransform() ?? null;
+  }
+
+  function resetFlip(): CropperImageElementInstance | null {
+    return scaleImage(1, 1);
   }
 
   function resetSelection(): CropperSelectionElement | null {
@@ -191,6 +203,8 @@ export function useCropper(target: Ref<HTMLImageElement | null> = shallowRef(nul
     changeSelection,
     clearSelection,
     destroy,
+    flipX,
+    flipY,
     getCanvas,
     getData,
     getImage,
@@ -203,6 +217,7 @@ export function useCropper(target: Ref<HTMLImageElement | null> = shallowRef(nul
     moveImageTo,
     moveSelection,
     moveSelectionTo,
+    resetFlip,
     resetImageTransform,
     resetSelection,
     rotateImage,

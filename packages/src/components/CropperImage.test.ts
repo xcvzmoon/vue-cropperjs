@@ -212,6 +212,9 @@ describe('CropperImage', () => {
     exposed.moveImageTo(7, 8);
     exposed.zoomImage(0.1, 9, 10);
     exposed.rotateImage('45deg', 11, 12);
+    exposed.flipX();
+    exposed.flipY();
+    exposed.resetFlip();
     exposed.scaleImage(1.2, 1.3);
     exposed.setImageTransform([1, 0, 0, 1, 30, 40]);
     exposed.resetImageTransform();
@@ -238,6 +241,9 @@ describe('CropperImage', () => {
     expect(mockState.image.$moveTo).toHaveBeenCalledWith(7, 8);
     expect(mockState.image.$zoom).toHaveBeenCalledWith(0.1, 9, 10);
     expect(mockState.image.$rotate).toHaveBeenCalledWith('45deg', 11, 12);
+    expect(mockState.image.$scale).toHaveBeenCalledWith(-1, 1);
+    expect(mockState.image.$scale).toHaveBeenCalledWith(1, -1);
+    expect(mockState.image.$scale).toHaveBeenCalledWith(1, 1);
     expect(mockState.image.$scale).toHaveBeenCalledWith(1.2, 1.3);
     expect(mockState.image.$setTransform).toHaveBeenCalledWith([1, 0, 0, 1, 30, 40]);
     expect(mockState.image.$resetTransform).toHaveBeenCalledTimes(1);
