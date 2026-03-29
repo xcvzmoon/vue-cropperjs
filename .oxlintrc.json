@@ -55,7 +55,6 @@
     "max-classes-per-file": "error",
     "max-depth": "error",
     "max-nested-callbacks": "error",
-    "max-params": "error",
     "misrefactored-assign-op": "error",
     "new-cap": "error",
     "new-for-builtins": "error",
