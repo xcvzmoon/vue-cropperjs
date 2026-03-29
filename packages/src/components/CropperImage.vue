@@ -37,6 +37,21 @@ function createSourceErrorMessage(src: string): string {
   return `Failed to load image source "${src}"`;
 }
 
+function normalizeComponentError(error: unknown): Error {
+  const normalizedError = normalizeError(error);
+
+  if (normalizedError.message.startsWith('Failed to load cropper image source')) {
+    return new Error(
+      normalizedError.message.replace('Failed to load cropper image source', 'Failed to load image source'),
+      {
+        cause: normalizedError,
+      },
+    );
+  }
+
+  return normalizedError;
+}
+
 function ensureImageElement(): HTMLImageElement {
   const existingImage = imageRef.value;
   if (existingImage) return existingImage;
@@ -207,12 +222,6 @@ async function initialize() {
 
     if (!instance) return;
 
-    try {
-      await cropper.getImage()?.$ready();
-    } catch (error) {
-      throw new Error(`${createSourceErrorMessage(props.src)}: ${normalizeError(error).message}`, { cause: error });
-    }
-
     bindElementEvents();
     applyElementProps();
     applyModelData(props.data);
@@ -220,7 +229,7 @@ async function initialize() {
     emits('ready', instance);
     emitDataUpdate();
   } catch (error) {
-    emits('error', normalizeError(error));
+    emits('error', normalizeComponentError(error));
   }
 }
 
@@ -249,7 +258,7 @@ watch(
         emitDataUpdate();
       })
       .catch((error: unknown) => {
-        emits('error', normalizeError(error));
+        emits('error', normalizeComponentError(error));
       });
   },
 );
